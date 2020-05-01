@@ -16,3 +16,8 @@ test('get primary id', () => {
     expect(res['cls']).toBe('Gene');
     expect(res['value']).toBe("7852")
 });
+
+test("get display message", () => {
+    let res = main.get_display_message("Gene", id_dict);
+    expect(res).toBe("NCBIGene(7852) ENSEMBL(ENSG00000121966) HGNC(2561) UMLS(C1332823) UNIPROTKB(P61073) SYMBOL(CXCR4)");
+})
