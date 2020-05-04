@@ -37,7 +37,7 @@ test('get gene response', () => {
 
 test('parse gene response', async () => {
     const data = await main.construct_single_query('Gene', 'CXCR4');
-    const res = main.parse_single_response(data);
+    const res = main.parse_single_response(data)['Gene'];
     expect(res[0]['SYMBOL']).toBe('CXCR4');
     expect(res[0]['ENSEMBL']).toBe('ENSG00000121966');
     expect(res[0]['NCBIGene']).toBe('7852');

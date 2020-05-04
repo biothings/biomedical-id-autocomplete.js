@@ -89,13 +89,22 @@ exports.make_queries = (input) => {
 }
 
 exports.parse_single_response = (response) => {
-    const semantic_type = response['config']['type']
-    let result = [];
+    const TYPE_MAPPING = {
+        "bp": "BiologicalProcess",
+        "pathway": "Pathway",
+        "cc": "CellularComponent",
+        "mf": "MolecularActivity"
+    }
+    let semantic_type = response['config']['type'];
+    let result = {};
     for (let res of response.data) {
         if ("notfound" in res) {
             continue
         }
         let tmp = {};
+        if (res['type'] in TYPE_MAPPING) {
+            semantic_type = TYPE_MAPPING[res['type']];
+        }
         const mapping = ID_RESOLVING_APIS[semantic_type]["mapping"];
         for (let id_type of Object.keys(mapping)) {
             for (let field of mapping[id_type]) {
@@ -113,7 +122,26 @@ exports.parse_single_response = (response) => {
         tmp['primary'] = this.get_primary_id(semantic_type, tmp);
         tmp['display'] = this.get_display_message(semantic_type, tmp);
         tmp['type'] = semantic_type;
-        result.push(tmp);
+        if (!(semantic_type in result)) {
+            result[semantic_type] = [];
+        }
+        result[semantic_type].push(tmp);
+    }
+    return result;
+}
+
+exports.autocomplete = async (input) => {
+    const responses = await this.make_queries(input);
+    console.log(responses[4].data);
+    let result = {};
+    let res;
+    for (res of responses) {
+        result = Object.assign(result, this.parse_single_response(res));
+    };
+    for (const semantic_type of Object.keys(ID_RESOLVING_APIS)) {
+        if (!(semantic_type in result)) {
+            result[semantic_type] = [];
+        }
     }
     return result;
 }
