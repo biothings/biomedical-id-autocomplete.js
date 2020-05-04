@@ -1,4 +1,5 @@
 const ID_RESOLVING_APIS = require('./config').ID_RESOLVING_APIS;
+const axios = require('axios');
 
 /**
  * Update the primary ID from id options
@@ -50,6 +51,70 @@ exports.get_query_fields = (semantic_type) => {
     for (let index = 0; index < field_values.length; index++) {
         fields = fields.concat(field_values[index]);
     };
-    console.log('fields', fields)
     return fields.sort().join(',')
 }
+
+exports.construct_single_query = (semantic_type, input) => {
+    const base_url = ID_RESOLVING_APIS[semantic_type]["url"] + '/query';
+    let query_fields;
+    if (ID_RESOLVING_APIS[semantic_type]["api_name"] === "geneset API") {
+        query_fields = 'go,umls,name,reactome,wikipathways,kegg,pharmgkb,type';
+    } else {
+        query_fields = this.get_query_fields(semantic_type);
+    }
+    return axios({
+        method: 'post',
+        url: base_url,
+        params: {
+            fields: query_fields,
+            species: 'human',
+            dotfield: true
+        },
+        data: 'q=' + input + '&scopes=' + query_fields,
+        timeout: 1000,
+        type: semantic_type
+    })
+}
+
+exports.make_queries = (input) => {
+    let semantic_types = Object.keys(ID_RESOLVING_APIS);
+    let queries = [];
+    for (const semantic_type of semantic_types) {
+        if (semantic_type in ['BiologicalProcess', 'Pathway', 'CellularComponent']){
+            continue;
+        }
+        queries.push(this.construct_single_query(semantic_type, input))
+    };
+    return axios.all(queries);
+}
+
+exports.parse_single_response = (response) => {
+    const semantic_type = response['config']['type']
+    let result = [];
+    for (let res of response.data) {
+        if ("notfound" in res) {
+            continue
+        }
+        let tmp = {};
+        const mapping = ID_RESOLVING_APIS[semantic_type]["mapping"];
+        for (let id_type of Object.keys(mapping)) {
+            for (let field of mapping[id_type]) {
+                if (field in res) {
+                    let val = res[field];
+                    if (Array.isArray(val)) {
+                        tmp[id_type] = val[0];
+                    } else {
+                        tmp[id_type] = val;
+                    }
+                    break;
+                }
+            }
+        }
+        tmp['primary'] = this.get_primary_id(semantic_type, tmp);
+        tmp['display'] = this.get_display_message(semantic_type, tmp);
+        tmp['type'] = semantic_type;
+        result.push(tmp);
+    }
+    return result;
+}
+
