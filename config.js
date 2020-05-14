@@ -48,7 +48,7 @@ exports.ID_RESOLVING_APIS = {
         "id_ranks": ["MONDO", "DOID", "OMIM", "ORPHANET", "UMLS", "MESH", "name"],
         "semantic": "Disease",
         "api_name": "mydisease.info",
-        "url": "https://mydisease.info/v1",
+        "url": "http://mydisease.info/v1",
         "mapping": {
             "MONDO": ["_id"],
             "DOID": ["mondo.xrefs.doid"],
