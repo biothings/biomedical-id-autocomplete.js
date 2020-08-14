@@ -24,7 +24,7 @@
   "homepage": "https://github.com/kevinxin90/biomedical-id-autocomplete.js#readme",
   "devDependencies": {
     "coveralls": "^3.1.0",
-    "jest": "^25.5.3"
+    "jest": "^25.5.4"
   },
   "dependencies": {
     "axios": "^0.19.2"
