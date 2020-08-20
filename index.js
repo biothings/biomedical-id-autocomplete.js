@@ -54,6 +54,14 @@ exports.get_query_fields = (semantic_type) => {
     return fields.sort().join(',')
 }
 
+exports.construct_q = (input, query_fields) => {
+    let res = '';
+    query_fields.split(',').map(field => {
+        res = res + field + ':' + input.toString() + '* OR ';
+    })
+    return res.slice(0, -4);
+}
+
 exports.construct_single_query = (semantic_type, input) => {
     const base_url = ID_RESOLVING_APIS[semantic_type]["url"] + '/query';
     let query_fields;
@@ -63,14 +71,14 @@ exports.construct_single_query = (semantic_type, input) => {
         query_fields = this.get_query_fields(semantic_type);
     }
     return axios({
-        method: 'post',
+        method: 'get',
         url: base_url,
         params: {
+            q: this.construct_q(input, query_fields),
             fields: query_fields,
             species: 'human',
             dotfield: true
         },
-        data: 'q=' + input + '&scopes=' + query_fields,
         timeout: 1000,
         type: semantic_type
     })
@@ -80,7 +88,7 @@ exports.make_queries = (input) => {
     let semantic_types = Object.keys(ID_RESOLVING_APIS);
     let queries = [];
     for (const semantic_type of semantic_types) {
-        if (semantic_type in ['BiologicalProcess', 'Pathway', 'CellularComponent']){
+        if (semantic_type in ['BiologicalProcess', 'Pathway', 'CellularComponent']) {
             continue;
         }
         queries.push(this.construct_single_query(semantic_type, input))
@@ -97,10 +105,7 @@ exports.parse_single_response = (response) => {
     }
     let semantic_type = response['config']['type'];
     let result = {};
-    for (let res of response.data) {
-        if ("notfound" in res) {
-            continue
-        }
+    for (let res of response.data.hits) {
         let tmp = {};
         if (res['type'] in TYPE_MAPPING) {
             semantic_type = TYPE_MAPPING[res['type']];
@@ -131,8 +136,13 @@ exports.parse_single_response = (response) => {
 }
 
 exports.autocomplete = async (input) => {
-    const responses = await this.make_queries(input);
-    console.log(responses[4].data);
+    let responses;
+    try {
+        responses = await this.make_queries(input);
+    } catch (e) {
+        console.log(e)
+    }
+
     let result = {};
     let res;
     for (res of responses) {
