@@ -31,7 +31,6 @@ exports.ID_RESOLVING_APIS = {
         "semantic": "SequenceVariant",
         "url": "https://myvariant.info/v1",
         "mapping": {
-            "MYVARIANT_HG19": ["_id"],
             "DBSNP": ["dbsnp.rsid", "clinvar.rsid", "dbnsfp.rsid"],
             "HGVS": [
                 "clinvar.hgvs.genomic",
@@ -39,6 +38,7 @@ exports.ID_RESOLVING_APIS = {
                 "clinvar.hgvs.coding",
             ],
             "ClinVar": ["clinvar.rcv.accession"],
+            "name": ["dbsnp.rsid", "clinvar.rsid", "dbnsfp.rsid"],
         },
     },
     "ChemicalSubstance": {
@@ -51,6 +51,9 @@ exports.ID_RESOLVING_APIS = {
             "UNII",
             "UMLS",
             "name",
+            "CAS",
+            "IUPAC",
+            "formula",
         ],
         "semantic": "ChemicalSubstance",
         "api_name": "mychem.info",
@@ -107,6 +110,18 @@ exports.ID_RESOLVING_APIS = {
                 "ginas.preferred_name",
                 "pharmgkb.name",
                 "chebi.name",
+                "drugbank.international_brands.name",
+                "chembl.molecule_synonyms.synonyms",
+                "drugbank.synonyms",
+                "drugcentral.synonyms",
+                "chebi.synonyms",
+            ],
+            "CAS": ["ginas.cas_primary", "pharmgkb.xrefs.cas", "chebi.xrefs.cas"],
+            "IUPAC": ["pubchem.iupac.traditional", "drugbank.iupac"],
+            "formula": [
+                "chebi.formulae",
+                "drugbank.formula",
+                "pubchem.molecular_formula",
             ],
         },
     },
@@ -116,7 +131,7 @@ exports.ID_RESOLVING_APIS = {
         "api_name": "mydisease.info",
         "url": "http://mydisease.info/v1",
         "mapping": {
-            "MONDO": ["_id"],
+            "MONDO": ["mondo.mondo"],
             "DOID": ["mondo.xrefs.doid"],
             "UMLS": ["mondo.xrefs.umls", "disgenet.xrefs.umls"],
             "name": ["mondo.label", "disgenet.xrefs.disease_name", "mondo.synonyms"],
@@ -143,13 +158,13 @@ exports.ID_RESOLVING_APIS = {
         "mapping": {
             "UMLS": ["xrefs.umls"],
             "SNOMEDCT": ["xrefs.snomed_ct"],
-            "HP": ["_id"],
+            "HP": ["hp"],
             "MEDDRA": ["xrefs.meddra"],
             "EFO": ["xrefs.efo"],
             "NCIT": ["xrefs.ncit"],
             "MESH": ["xrefs.mesh"],
             "MP": ["xrefs.mp"],
-            "name": ["name"],
+            "name": ["name", "synonym.exact", "synonym.related", "synonym.broad"],
         },
     },
     "MolecularActivity": {
@@ -158,12 +173,12 @@ exports.ID_RESOLVING_APIS = {
         "api_name": "Gene Ontology Molecular Function API",
         "url": "https://biothings.ncats.io/go_mf",
         "mapping": {
-            "GO": ["_id"],
+            "GO": ["go"],
             "MetaCyc": ["xrefs.metacyc"],
             "RHEA": ["xrefs.rhea"],
             "KEGG": ["xrefs.kegg_reaction"],
             "REACT": ["xrefs.reactome"],
-            "name": ["name"],
+            "name": ["name", "synonym.exact", "synonym.related", "synonym.broad"],
         },
     },
     "BiologicalProcess": {
@@ -172,11 +187,11 @@ exports.ID_RESOLVING_APIS = {
         "api_name": "Gene Ontology Biological Process API",
         "url": "https://biothings.ncats.io/go_bp",
         "mapping": {
-            "GO": ["_id"],
+            "GO": ["go"],
             "MetaCyc": ["xrefs.metacyc"],
             "KEGG": ["xrefs.kegg_pathway"],
             "REACT": ["xrefs.reactome"],
-            "name": ["name"],
+            "name": ["name", "synonym.exact", "synonym.related", "synonym.broad"],
         },
     },
     "CellularComponent": {
@@ -185,10 +200,10 @@ exports.ID_RESOLVING_APIS = {
         "api_name": "Gene Ontology Cellular Component API",
         "url": "https://biothings.ncats.io/go_cc",
         "mapping": {
-            "GO": ["_id"],
+            "GO": ["go"],
             "MetaCyc": ["xrefs.metacyc"],
             "RHEA": ["xrefs.rhea"],
-            "name": ["name"],
+            "name": ["name", "synonym.exact", "synonym.related", "synonym.broad"],
         },
     },
     "Pathway": {
@@ -210,24 +225,24 @@ exports.ID_RESOLVING_APIS = {
         "api_name": "UBERON API",
         "url": "https://biothings.ncats.io/uberon",
         "mapping": {
-            "UBERON": ["_id"],
+            "UBERON": ["uberon"],
             "UMLS": ["xrefs.umls"],
             "MESH": ["xrefs.mesh"],
             "NCIT": ["xrefs.ncit"],
-            "name": ["name"],
+            "name": ["name", "synonym.exact", "synonym.related", "synonym.broad"],
         },
     },
     "Cell": {
         "id_ranks": ["CL", "NCIT", "MESH", "EFO", "name"],
         "semantic": "Cell",
-        "api_name": "Cell Onotlogy API",
+        "api_name": "Cell Ontology API",
         "url": "https://biothings.ncats.io/cell_ontology",
         "mapping": {
-            "CL": ["_id"],
+            "CL": ["cl"],
             "NCIT": ["xrefs.ncit"],
             "MESH": ["xrefs.mesh"],
             "EFO": ["xrefs.efo"],
-            "name": ["name"],
-        }
-    }
+            "name": ["name", "synonym.exact", "synonym.related", "synonym.broad"],
+        },
+    },
 }
