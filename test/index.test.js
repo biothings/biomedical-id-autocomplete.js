@@ -1,12 +1,12 @@
 const main = require('../index');
 
 const id_dict = {
-    "NCBIGene": "7852", 
-    "name": "C-X-C motif chemokine receptor 4", 
-    "SYMBOL": "CXCR4", 
-    "UMLS": "C1332823", 
-    "HGNC": "2561", 
-    "UNIPROTKB": "P61073", 
+    "NCBIGene": "7852",
+    "name": "C-X-C motif chemokine receptor 4",
+    "SYMBOL": "CXCR4",
+    "UMLS": "C1332823",
+    "HGNC": "2561",
+    "UNIPROTKB": "P61073",
     "ENSEMBL": "ENSG00000121966"
 }
 
@@ -29,9 +29,8 @@ test('get query fields', () => {
 
 test('get gene response', () => {
     return main.construct_single_query('Gene', 'CXCR4').then(data => {
-        expect(data.data[0]['query']).toBe('CXCR4');
-        expect(data.data[0]['HGNC']).toBe('2561');
-        expect(data.data[0]['ensembl.gene']).toBe('ENSG00000121966');
+        expect(data.data.hits[0]['HGNC']).toBe('2561');
+        expect(data.data.hits[0]['ensembl.gene']).toBe('ENSG00000121966');
     })
 })
 
