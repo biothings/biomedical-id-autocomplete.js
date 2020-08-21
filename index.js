@@ -124,6 +124,7 @@ exports.parse_single_response = (response) => {
                 }
             }
         }
+        tmp['_score'] = res._score;
         tmp['primary'] = this.get_primary_id(semantic_type, tmp);
         tmp['display'] = this.get_display_message(semantic_type, tmp);
         tmp['type'] = semantic_type;
