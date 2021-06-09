@@ -1,6 +1,6 @@
 {
   "name": "biomedical-id-autocomplete",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "description": "autocomplete biomedical ids",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kevinxin90/biomedical-id-autocomplete.js.git"
+    "url": "git+https://github.com/biothings/biomedical-id-autocomplete.js.git"
   },
   "keywords": [
     "biomedial",
@@ -19,9 +19,9 @@
   "author": "jiwen xin",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kevinxin90/biomedical-id-autocomplete.js/issues"
+    "url": "https://github.com/biothings/biomedical-id-autocomplete.js/issues"
   },
-  "homepage": "https://github.com/kevinxin90/biomedical-id-autocomplete.js#readme",
+  "homepage": "https://github.com/biothings/biomedical-id-autocomplete.js#readme",
   "devDependencies": {
     "coveralls": "^3.1.0",
     "jest": "^25.5.4"

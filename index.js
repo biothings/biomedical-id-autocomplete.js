@@ -137,11 +137,11 @@ exports.parse_single_response = (response) => {
 }
 
 exports.autocomplete = async (input) => {
-    let responses;
+    let responses = [];
     try {
         responses = await this.make_queries(input);
     } catch (e) {
-        console.log(e)
+        console.warn(e);
     }
 
     let result = {};
