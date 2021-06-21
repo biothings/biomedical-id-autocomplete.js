@@ -79,7 +79,7 @@ exports.construct_single_query = (semantic_type, input) => {
             species: 'human',
             dotfield: true
         },
-        timeout: 1000,
+        timeout: 5000,
         type: semantic_type
     })
 }
