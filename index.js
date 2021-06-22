@@ -79,9 +79,9 @@ exports.construct_single_query = (semantic_type, input) => {
             species: 'human',
             dotfield: true
         },
-        timeout: 5000,
+        timeout: 3000,
         type: semantic_type
-    })
+    }).catch(err => console.warn(err));
 }
 
 exports.make_queries = (input) => {
@@ -145,9 +145,10 @@ exports.autocomplete = async (input) => {
     }
 
     let result = {};
-    let res;
-    for (res of responses) {
-        result = Object.assign(result, this.parse_single_response(res));
+    for (let res of responses) {
+        if (res) {
+            result = Object.assign(result, this.parse_single_response(res));
+        }
     };
     for (const semantic_type of Object.keys(ID_RESOLVING_APIS)) {
         if (!(semantic_type in result)) {
