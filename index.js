@@ -157,10 +157,6 @@ exports.autocomplete = async (input) => {
             break;
         }
     } 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3e3dab83fd0bc6d5de5019da3625d818530dc32b
     if (response_empty) {
         try {
             responses = await this.make_queries(input, true);
