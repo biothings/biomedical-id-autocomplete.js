@@ -29,17 +29,34 @@ test('get query fields', () => {
 
 test('get gene response', () => {
     return main.construct_single_query('Gene', 'CXCR4').then(data => {
-        expect(data.data.hits[0]['HGNC']).toBe('2561');
-        expect(data.data.hits[0]['ensembl.gene']).toBe('ENSG00000121966');
+        expect(JSON.stringify(data)).toContain('2561');
+        expect(JSON.stringify(data)).toContain('ENSG00000121966');
     })
 })
 
 test('parse gene response', async () => {
     const data = await main.construct_single_query('Gene', 'CXCR4');
     const res = main.parse_single_response(data)['Gene'];
-    expect(res[0]['SYMBOL']).toBe('CXCR4');
-    expect(res[0]['ENSEMBL']).toBe('ENSG00000121966');
-    expect(res[0]['NCBIGene']).toBe('7852');
-    expect(res[0]['primary']['identifier']).toBe('NCBIGene');
+    expect(JSON.stringify(res)).toContain('CXCR4');
+    for (let result of res) {
+        if (result['SYMBOL'] === 'CXCR4') {
+            expect(result['SYMBOL']).toBe('CXCR4');
+            expect(result['ENSEMBL']).toBe('ENSG00000121966');
+            expect(result['NCBIGene']).toBe('7852');
+            expect(result['primary']['identifier']).toBe('NCBIGene');
+        }
+    }
+    
+})
+
+
+test('test autocomplete with id', async () => {
+    const res = await main.autocomplete('MONDO:0005737');
+    expect(res.Disease.length).toBeGreaterThan(0);
+})
+
+test('test autocomplete with "multiple sclerosis"', async () => {
+    const res = await main.autocomplete('multiple sclerosis');
+    expect(res.Disease.length).toBeGreaterThan(0);
 })
 
