@@ -29,7 +29,6 @@ test('get query fields', () => {
 
 test('get gene response', () => {
     return main.construct_single_query('Gene', 'CXCR4').then(data => {
-        console.log(JSON.stringify(data));
         expect(JSON.stringify(data)).toContain('2561');
         expect(JSON.stringify(data)).toContain('ENSG00000121966');
     })
