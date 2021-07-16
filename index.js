@@ -57,7 +57,7 @@ exports.get_query_fields = (semantic_type) => {
 // exports.construct_q = (input, query_fields) => {
 //     let res = '';
 //     query_fields.split(',').map(field => {
-//         res = `${res}${field}:${input.toString()}* OR `;
+//         res = `${res}${field}:"${input.toString()}*" OR `;
 //     })
 //     return res.slice(0, -5);
 // }
@@ -157,6 +157,10 @@ exports.autocomplete = async (input) => {
             break;
         }
     } 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3e3dab83fd0bc6d5de5019da3625d818530dc32b
     if (response_empty) {
         try {
             responses = await this.make_queries(input, true);
