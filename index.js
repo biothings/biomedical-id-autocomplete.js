@@ -54,15 +54,16 @@ exports.get_query_fields = (semantic_type) => {
     return fields.sort().join(',')
 }
 
-exports.construct_q = (input, query_fields) => {
-    let res = '';
-    query_fields.split(',').map(field => {
-        res = res + field + ':' + input.toString() + '* OR ';
-    })
-    return res.slice(0, -4);
-}
+// exports.construct_q = (input, query_fields) => {
+//     let res = '';
+//     query_fields.split(',').map(field => {
+//         res = `${res}${field}:${input.toString()}* OR `;
+//     })
+//     return res.slice(0, -5);
+// }
 
-exports.construct_single_query = (semantic_type, input) => {
+//wide - whether or not to match wider results with a *
+exports.construct_single_query = (semantic_type, input, wide=false) => {
     const base_url = ID_RESOLVING_APIS[semantic_type]["url"] + '/query';
     let query_fields;
     if (ID_RESOLVING_APIS[semantic_type]["api_name"] === "geneset API") {
@@ -70,11 +71,13 @@ exports.construct_single_query = (semantic_type, input) => {
     } else {
         query_fields = this.get_query_fields(semantic_type);
     }
+
     return axios({
         method: 'get',
         url: base_url,
         params: {
-            q: this.construct_q(input, query_fields),
+            q: wide ? `${input}*` : `"${input}"`,
+            // q: this.construct_q(input, query_fields),
             fields: query_fields,
             species: 'human',
             dotfield: true
@@ -84,14 +87,14 @@ exports.construct_single_query = (semantic_type, input) => {
     }).catch(err => console.warn(err));
 }
 
-exports.make_queries = (input) => {
+exports.make_queries = (input, wide=false) => {
     let semantic_types = Object.keys(ID_RESOLVING_APIS);
     let queries = [];
     for (const semantic_type of semantic_types) {
         if (semantic_type in ['BiologicalProcess', 'Pathway', 'CellularComponent']) {
             continue;
         }
-        queries.push(this.construct_single_query(semantic_type, input))
+        queries.push(this.construct_single_query(semantic_type, input, wide))
     };
     return axios.all(queries);
 }
@@ -138,10 +141,28 @@ exports.parse_single_response = (response) => {
 
 exports.autocomplete = async (input) => {
     let responses = [];
+
+    //attempt to get exact matches first
     try {
-        responses = await this.make_queries(input);
+        responses = await this.make_queries(input, false);
     } catch (e) {
         console.warn(e);
+    }
+
+    //if there are no results attempt wider matching
+    let response_empty = true;
+    for (let res of responses) {
+        if (res.data.total > 0) {
+            response_empty = false;
+            break;
+        }
+    } 
+    if (response_empty) {
+        try {
+            responses = await this.make_queries(input, true);
+        } catch (e) {
+            console.warn(e);
+        }
     }
 
     let result = {};
