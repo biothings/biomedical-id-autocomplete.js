@@ -1,5 +1,21 @@
 const ID_RESOLVING_APIS = require('./config').ID_RESOLVING_APIS;
 const axios = require('axios');
+const resolver = require('biomedical_id_resolver');
+
+/**
+ * Combines identifier and value into curie when values 
+ * may or may not contain the identifier
+ * @param {string} identifier 
+ * @param {string} value 
+ * @returns - string of curie
+ */
+exports.make_curie = (identifier, value) => {
+    if (value.indexOf(':') === -1) {
+        return identifier + ':' + value;
+    } else {
+        return value;
+    }
+}
 
 /**
  * Update the primary ID from id options
@@ -15,7 +31,8 @@ exports.get_primary_id = (semantic_type, id_dict) => {
             res = {
                 identifier: ranks[index],
                 cls: semantic_type,
-                value: id_dict[ranks[index]]
+                value: id_dict[ranks[index]],
+                curie: this.make_curie(ranks[index], id_dict[ranks[index]])
             };
             return res;
         }
@@ -31,12 +48,25 @@ exports.get_primary_id = (semantic_type, id_dict) => {
 exports.get_display_message = (semantic_type, id_dict) => {
     let ranks = ID_RESOLVING_APIS[semantic_type]["id_ranks"];
     let res = '';
-    for (let index = 0; index < ranks.length; index++) {
-        if (ranks[index] in id_dict) {
-            res += (ranks[index] + '(' + id_dict[ranks[index]] + ') ');
+
+    const fields_to_ignore = ['name', '_score', 'primary'];
+    //sort the id_dict by index of key in ranks array with not found going last
+    let sorted_id_dict = Object.keys(id_dict).filter(x => !fields_to_ignore.includes(x)).sort((a, b) => {
+        let a_val = ranks.indexOf(a);
+        if (a_val === -1) {
+            a_val = ranks.length;
         }
+        let b_val = ranks.indexOf(b);
+        if (b_val === -1) {
+            b_val = ranks.length;
+        }
+        return a_val - b_val;
+    });
+
+    for (let k of sorted_id_dict) {
+        res += this.make_curie(k, String(id_dict[k])) + ' ';
     }
-    return res.replace(/^\s+|\s+$/g, '');
+    return res;
 }
 
 /**
@@ -53,14 +83,6 @@ exports.get_query_fields = (semantic_type) => {
     };
     return fields.sort().join(',')
 }
-
-// exports.construct_q = (input, query_fields) => {
-//     let res = '';
-//     query_fields.split(',').map(field => {
-//         res = `${res}${field}:"${input.toString()}*" OR `;
-//     })
-//     return res.slice(0, -5);
-// }
 
 //wide - whether or not to match wider results with a *
 exports.construct_single_query = (semantic_type, input, wide=false) => {
@@ -106,8 +128,9 @@ exports.parse_single_response = (response) => {
         "cc": "CellularComponent",
         "mf": "MolecularActivity"
     }
+    //old semantic types, just used for populating info
     let semantic_type = response['config']['type'];
-    let result = {};
+    let result = [];
     for (let res of response.data.hits) {
         let tmp = {};
         if (res['type'] in TYPE_MAPPING) {
@@ -130,11 +153,9 @@ exports.parse_single_response = (response) => {
         tmp['_score'] = res._score;
         tmp['primary'] = this.get_primary_id(semantic_type, tmp);
         tmp['display'] = this.get_display_message(semantic_type, tmp);
-        tmp['type'] = semantic_type;
-        if (!(semantic_type in result)) {
-            result[semantic_type] = [];
+        if (tmp['primary']) {
+            result.push(tmp);
         }
-        result[semantic_type].push(tmp);
     }
     return result;
 }
@@ -165,17 +186,30 @@ exports.autocomplete = async (input) => {
         }
     }
 
-    let result = {};
+    let result = [];
     for (let res of responses) {
         if (res) {
-            result = Object.assign(result, this.parse_single_response(res));
+            result.push(...this.parse_single_response(res));
         }
     };
-    for (const semantic_type of Object.keys(ID_RESOLVING_APIS)) {
-        if (!(semantic_type in result)) {
-            result[semantic_type] = [];
+
+    let sri_input = {
+        'undefined': result.map(obj => obj.primary.curie)
+    }
+
+    //apply semantic type to result using sri
+    let sri_res = await resolver.resolveSRI(sri_input);
+
+    for (let r of result) {
+        if (sri_res?.[r.primary.curie]) {
+            let semantic_type = sri_res[r.primary.curie][0].semanticType;
+            r.primary.type = semantic_type;
         }
     }
-    return result;
+
+    //sort by score
+    return result.sort((a, b) => {
+        return b._score - a._score;
+    });
 }
 

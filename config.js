@@ -50,7 +50,6 @@ exports.ID_RESOLVING_APIS = {
             "MESH",
             "UNII",
             "UMLS",
-            "name",
             "CAS",
             "IUPAC",
             "formula",
@@ -126,7 +125,7 @@ exports.ID_RESOLVING_APIS = {
         },
     },
     "Disease": {
-        "id_ranks": ["MONDO", "DOID", "OMIM", "ORPHANET", "UMLS", "MESH", "name"],
+        "id_ranks": ["MONDO", "DOID", "OMIM", "ORPHANET", "UMLS", "MESH"],
         "semantic": "Disease",
         "api_name": "mydisease.info",
         "url": "https://mydisease.info/v1",
@@ -150,7 +149,6 @@ exports.ID_RESOLVING_APIS = {
             "NCIT",
             "MESH",
             "MP",
-            "name",
         ],
         "semantic": "PhenotypicFeature",
         "api_name": "HPO API",
@@ -168,7 +166,7 @@ exports.ID_RESOLVING_APIS = {
         },
     },
     "MolecularActivity": {
-        "id_ranks": ["GO", "MetaCyc", "RHEA", "KEGG", "REACT", "name"],
+        "id_ranks": ["GO", "MetaCyc", "RHEA", "KEGG", "REACT"],
         "semantic": "MolecularActivity",
         "api_name": "Gene Ontology Molecular Function API",
         "url": "https://biothings.ncats.io/go_mf",
@@ -182,7 +180,7 @@ exports.ID_RESOLVING_APIS = {
         },
     },
     "BiologicalProcess": {
-        "id_ranks": ["GO", "MetaCyc", "REACT", "KEGG", "name"],
+        "id_ranks": ["GO", "MetaCyc", "REACT", "KEGG"],
         "semantic": "BiologicalProcess",
         "api_name": "Gene Ontology Biological Process API",
         "url": "https://biothings.ncats.io/go_bp",

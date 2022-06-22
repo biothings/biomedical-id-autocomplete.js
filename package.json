@@ -27,6 +27,7 @@
     "jest": "^25.5.4"
   },
   "dependencies": {
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "biomedical_id_resolver": "^3.11.0"
   }
 }
