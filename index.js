@@ -199,10 +199,8 @@ exports.autocomplete = async (input) => {
     let sri_res = await resolver.resolveSRI(sri_input);
 
     for (let r of result) {
-        if (sri_res?.[r.primary.curie]) {
-            let semantic_type = sri_res[r.primary.curie][0].semanticType;
-            r.primary.type = semantic_type;
-        }
+        let semantic_type = sri_res[r.primary.curie][0].semanticType;
+        r.primary.type = semantic_type;
     }
 
     //sort by score
