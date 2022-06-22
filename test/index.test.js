@@ -19,7 +19,7 @@ test('get primary id', () => {
 
 test("get display message", () => {
     let res = main.get_display_message("Gene", id_dict);
-    expect(res).toBe("NCBIGene(7852) ENSEMBL(ENSG00000121966) HGNC(2561) UMLS(C1332823) UNIPROTKB(P61073) SYMBOL(CXCR4)");
+    expect(res).toBe("NCBIGene:7852 ENSEMBL:ENSG00000121966 HGNC:2561 UMLS:C1332823 UNIPROTKB:P61073 SYMBOL:CXCR4");
 });
 
 test('get query fields', () => {
@@ -36,7 +36,7 @@ test('get gene response', () => {
 
 test('parse gene response', async () => {
     const data = await main.construct_single_query('Gene', 'CXCR4');
-    const res = main.parse_single_response(data)['Gene'];
+    const res = main.parse_single_response(data);
     expect(JSON.stringify(res)).toContain('CXCR4');
     for (let result of res) {
         if (result['SYMBOL'] === 'CXCR4') {
@@ -52,11 +52,11 @@ test('parse gene response', async () => {
 
 test('test autocomplete with id', async () => {
     const res = await main.autocomplete('MONDO:0005737');
-    expect(res.Disease.length).toBeGreaterThan(0);
+    expect(res.length).toBeGreaterThan(0);
 })
 
 test('test autocomplete with "multiple sclerosis"', async () => {
     const res = await main.autocomplete('multiple sclerosis');
-    expect(res.Disease.length).toBeGreaterThan(0);
+    expect(res.length).toBeGreaterThan(0);
 })
 

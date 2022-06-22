@@ -47,7 +47,6 @@ exports.get_primary_id = (semantic_type, id_dict) => {
  */
 exports.get_display_message = (semantic_type, id_dict) => {
     let ranks = ID_RESOLVING_APIS[semantic_type]["id_ranks"];
-    let res = '';
 
     const fields_to_ignore = ['name', '_score', 'primary'];
     //sort the id_dict by index of key in ranks array with not found going last
@@ -63,10 +62,9 @@ exports.get_display_message = (semantic_type, id_dict) => {
         return a_val - b_val;
     });
 
-    for (let k of sorted_id_dict) {
-        res += this.make_curie(k, String(id_dict[k])) + ' ';
-    }
-    return res;
+    return sorted_id_dict.map(x => {
+        return this.make_curie(String(x), String(id_dict[x]));
+    }).join(' ');
 }
 
 /**
