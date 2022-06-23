@@ -244,3 +244,7 @@ exports.ID_RESOLVING_APIS = {
         },
     },
 }
+
+exports.CURIE = {
+    ALWAYS_PREFIXED: ['RHEA', 'GO', 'CHEBI', 'HP', 'MONDO', 'DOID', 'EFO', 'UBERON', 'MP', 'CL', 'MGI'],
+}

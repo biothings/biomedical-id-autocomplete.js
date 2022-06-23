@@ -1,6 +1,6 @@
 const ID_RESOLVING_APIS = require('./config').ID_RESOLVING_APIS;
 const axios = require('axios');
-const { resolveSRI } = require('biomedical_id_resolver');
+const { resolveSRI } = require('./sri');
 
 /**
  * Combines identifier and value into curie when values 
