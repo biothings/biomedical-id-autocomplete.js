@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "biomedical_id_resolver": "^3.11.0"
+    "biomedical_id_resolver": "^3.11.0",
+    "requirejs": "^2.3.6"
   }
 }

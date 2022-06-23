@@ -1,6 +1,6 @@
 const ID_RESOLVING_APIS = require('./config').ID_RESOLVING_APIS;
 const axios = require('axios');
-const resolver = require('biomedical_id_resolver');
+const { resolveSRI } = require('biomedical_id_resolver');
 
 /**
  * Combines identifier and value into curie when values 
@@ -196,7 +196,7 @@ exports.autocomplete = async (input) => {
     }
 
     //apply semantic type to result using sri
-    let sri_res = await resolver.resolveSRI(sri_input);
+    let sri_res = await resolveSRI(sri_input);
 
     for (let r of result) {
         let semantic_type = sri_res[r.primary.curie][0].semanticType;
