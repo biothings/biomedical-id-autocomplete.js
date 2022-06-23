@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.4](https://github.com/biothings/biomedical-id-autocomplete.js/compare/v2.0.3...v2.0.4) (2022-06-23)
+
+
+### Bug Fixes
+
+* check type when making curie ([b744fae](https://github.com/biothings/biomedical-id-autocomplete.js/commit/b744faefabb9d6aa8768d3de882cc48cbc7701ac))
+
 ### [2.0.3](https://github.com/biothings/biomedical-id-autocomplete.js/compare/v2.0.2...v2.0.3) (2022-06-23)
 
 
