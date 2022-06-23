@@ -10,7 +10,7 @@ const { resolveSRI } = require('./sri');
  * @returns - string of curie
  */
 exports.make_curie = (identifier, value) => {
-    if (value.indexOf(':') === -1) {
+    if (typeof value === 'String' && value.indexOf(':') === -1) {
         return identifier + ':' + value;
     } else {
         return value;
